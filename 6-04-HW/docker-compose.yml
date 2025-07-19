@@ -4,7 +4,7 @@ volumes:
   prometheus_data: {}
 
 networks:
-  filatov.v.k-my-netology-hw:
+  filatovvk-my-netology-hw:
     driver: bridge
     ipam:
       driver: default
@@ -14,16 +14,15 @@ networks:
 services:
   prometheus:
     image: prom/prometheus:v2.36.2
+    container_name: filatovvk-prometheus
     volumes:
       - ./prometheus/:/etc/prometheus/
       - prometheus_data:/prometheus
     command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-
+      --web.enable-lifecycle --config.file=/etc/prometheus/prometheus.yml
     ports:
       - 9090:9090
     networks:
-      - filatov.v.k-my-netology-hw
+      - filatovvk-my-netology-hw
     restart: always
 
