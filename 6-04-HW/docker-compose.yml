@@ -1,7 +1,7 @@
 version: '1.0'
 
 volumes:
-  test-vol:
+  prometheus_data: {}
 
 networks:
   filatov.v.k-my-netology-hw:
@@ -12,5 +12,18 @@ networks:
         - subnet: 10.5.0.0/16
 
 services:
-  test-service:
-    hostname: "test"
+  prometheus:
+    image: prom/prometheus:v2.36.2
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+
+    ports:
+      - 9090:9090
+    networks:
+      - filatov.v.k-my-netology-hw
+    restart: always
+
