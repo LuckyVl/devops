@@ -26,3 +26,13 @@ services:
       - filatovvk-my-netology-hw
     restart: always
 
+  pushgateway:
+    image: prom/pushgateway:v1.6.2
+    container_name: filatovvk-pushgateway
+    ports:
+      - 9091:9091
+    networks:
+      - filatovvk-my-netology-hw
+    depends_on:
+      - prometheus
+    restart: unless-stopped
