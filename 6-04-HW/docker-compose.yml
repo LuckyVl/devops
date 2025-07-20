@@ -1,8 +1,8 @@
 version: '3.3'
 
 volumes:
-  prometheus_data:
-  grafana-data:
+  prometheus_data: {}
+  grafana_data: {}
 
 networks:
   filatovvk-my-netology-hw:
@@ -41,15 +41,16 @@ services:
   grafana:
     image: grafana/grafana
     container_name: filatovvk-grafana
-    environment:
-      GF_PATHS_CONFIG: /home/filatovk/IdeaProjects/devops/6-04-HW/grafana/custom.ini
+    env_file:
+    - ./grafana/config.monitoring
     ports:
-      - 80:3000
+      - 3000:3000
     volumes:
-      - ./grafana:/etc/grafana
-      - grafana-data:/var/lib/grafana
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
     networks:
       - filatovvk-my-netology-hw
     depends_on:
       - pushgateway
+      - prometheus
     restart: unless-stopped
