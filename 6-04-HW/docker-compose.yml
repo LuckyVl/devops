@@ -1,8 +1,8 @@
 version: '3.3'
 
 volumes:
-  prometheus_data: {}
-  grafana-data: {}
+  prometheus_data:
+  grafana-data:
 
 networks:
   filatovvk-my-netology-hw:
@@ -20,8 +20,7 @@ services:
       - ./prometheus/:/etc/prometheus/
       - prometheus_data:/prometheus
     command:
-      - '--web.enable-lifecycle'
-      - '--config.file=/etc/prometheus/prometheus.yml'
+      --web.enable-lifecycle --config.file=/etc/prometheus/prometheus.yml
     ports:
       - 9090:9090
     networks:
