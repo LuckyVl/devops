@@ -2,6 +2,7 @@ version: '3.3'
 
 volumes:
   prometheus_data: {}
+  grafana-data: {}
 
 networks:
   filatovvk-my-netology-hw:
@@ -19,7 +20,8 @@ services:
       - ./prometheus/:/etc/prometheus/
       - prometheus_data:/prometheus
     command:
-      --web.enable-lifecycle --config.file=/etc/prometheus/prometheus.yml
+      - '--web.enable-lifecycle'
+      - '--config.file=/etc/prometheus/prometheus.yml'
     ports:
       - 9090:9090
     networks:
@@ -35,4 +37,20 @@ services:
       - filatovvk-my-netology-hw
     depends_on:
       - prometheus
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana
+    container_name: filatovvk-grafana
+    environment:
+      GF_PATHS_CONFIG: /etc/grafana/custom.ini
+    ports:
+      - 80:3000
+    volumes:
+      - ./grafana:/etc/grafana
+      - grafana-data:/var/lib/grafana
+    networks:
+      - filatovvk-my-netology-hw
+    depends_on:
+      - pushgateway
     restart: unless-stopped
