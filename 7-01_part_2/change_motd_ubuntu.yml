@@ -1,0 +1,37 @@
+---
+- name: Изменить MOTD на Ubuntu
+  hosts: hw-hosts
+  become: yes
+  vars:
+    motd_message: |
+      Добро пожаловать на {{ ansible_hostname }}!
+      Обратная связь: filatov.v.k@random.ru
+
+  tasks:
+    - name: Убедиться, что каталог /etc/update-motd.d существует
+      file:
+        path: /etc/update-motd.d
+        state: directory
+        mode: '0755'
+
+    - name: Добавить приветствие в MOTD
+      copy:
+        content: |
+          #!/bin/sh
+          echo "
+          {{ motd_message }}
+
+          "
+        dest: /etc/update-motd.d/99-custom-message
+        mode: '0755'
+
+    - name: Отключить баннер "System information as of"
+      file:
+        path: /etc/update-motd.d/10-help-text
+        state: absent
+      when: disable_help_text is defined and disable_help_text | bool
+
+    - name: Перезаписать /etc/motd при следующем входе
+      command: run-parts /etc/update-motd.d/
+      changed_when: false
+      run_once: true
