@@ -1,0 +1,26 @@
+---
+- name: Установка и настройка Apache на hw-hosts через jump-хост
+  hosts: hw-hosts
+  become: yes
+  gather_facts: yes
+  roles:
+    - apache_server
+
+- name: Проверка доступности веб-сайта с jump-хоста (bastion)
+  hosts: bastion
+  gather_facts: no
+  tasks:
+    - name: Проверка HTTP-ответа от веб-сервера 10.10.10.36 через curl
+      ansible.builtin.uri:
+        url: http://10.10.10.36/
+        validate_certs: no
+        status_code: 200
+        timeout: 10
+      register: result
+      retries: 6
+      delay: 5
+      until: result.status == 200
+
+    - name: Вывод результата проверки
+      ansible.builtin.debug:
+        msg: "Веб-сайт на 10.10.10.36 успешно доступен: код {{ result.status }}"

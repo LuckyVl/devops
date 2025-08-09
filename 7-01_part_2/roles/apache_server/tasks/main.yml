@@ -1,0 +1,45 @@
+---
+- name: Установка Apache (универсально)
+  ansible.builtin.package:
+    name: "{{ 'apache2' if ansible_facts.os_family == 'Debian' else 'httpd' }}"
+    state: present
+    update_cache: yes
+
+- name: Установка утилиты iproute (для сбора сетевых фактов)
+  ansible.builtin.package:
+    name: iproute2
+    state: present
+
+- name: Настройка index.html из шаблона
+  ansible.builtin.template:
+    src: index.html.j2
+    dest: /var/www/html/index.html
+    owner: "{{ 'www-data' if ansible_facts.os_family == 'Debian' else 'apache' }}"
+    group: "{{ 'www-data' if ansible_facts.os_family == 'Debian' else 'apache' }}"
+    mode: '0644'
+  notify: Перезапустить Apache
+
+- name: Открытие порта 80 в firewalld
+  ansible.builtin.firewalld:
+    port: 80/tcp
+    permanent: yes
+    state: enabled
+    immediate: yes
+  when: ansible_os_family == "RedHat"
+
+- name: Включение и запуск службы Apache
+  ansible.builtin.systemd:
+    name: "{{ 'apache2' if ansible_facts.os_family == 'Debian' else 'httpd' }}"
+    enabled: yes
+    state: started
+
+- name: Проверка доступности веб-сайта (локально)
+  ansible.builtin.uri:
+    url: http://127.0.0.1/
+    validate_certs: no
+    status_code: 200
+  register: result
+  retries: 5
+  delay: 2
+  until: result.status == 200
+  notify: Вывод результата проверки

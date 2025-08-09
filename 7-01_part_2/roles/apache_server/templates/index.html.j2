@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Информация о хосте</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f4f4; }
+    h1 { color: #333; }
+    .info { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .info p { margin: 10px 0; font-size: 1.1em; }
+  </style>
+</head>
+<body>
+  <h1>Сервер: {{ ansible_facts['hostname'] }}</h1>
+  <div class="info">
+    <p><strong>IP-адрес:</strong> {{ ansible_facts['default_ipv4']['address'] }}</p>
+    <p><strong>CPU:</strong> {{ ansible_facts['processor'][2] }} ({{ ansible_facts['processor_count'] }} ядер)</p>
+    <p><strong>Оперативная память (RAM):</strong> {{ ansible_facts['memtotal_mb'] }} МБ</p>
+    {% set disk = ansible_facts['devices'][ansible_facts['mounts'][0]['device'].split('/')[-1]] %}
+    <p><strong>Первый HDD:</strong> {{ disk.size if disk is defined else 'Неизвестно' }}</p>
+  </div>
+</body>
+</html>

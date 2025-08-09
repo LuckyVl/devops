@@ -1,0 +1,9 @@
+---
+- name: Перезапустить Apache
+  ansible.builtin.systemd:
+    name: "{{ 'apache2' if ansible_facts.os_family == 'Debian' else 'httpd' }}"
+    state: restarted
+
+- name: Вывод результата проверки
+  ansible.builtin.debug:
+    msg: "Веб-сайт успешно доступен с кодом 200"
