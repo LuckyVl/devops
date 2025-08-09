@@ -1,0 +1,15 @@
+---
+- name: Установить и настроить tuned
+  hosts: hw-hosts
+  become: yes
+  tasks:
+    - name: Установить пакет tuned
+      package:
+        name: tuned
+        state: present
+
+    - name: Включить и запустить службу tuned
+      systemd:
+        name: tuned
+        state: started
+        enabled: yes
