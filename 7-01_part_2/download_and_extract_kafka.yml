@@ -1,0 +1,52 @@
+---
+- name: Скачать и распаковать Apache Kafka
+  hosts: apach
+  become: yes
+  vars:
+    kafka_version: "3.9.1"
+    scala_version: "2.13"
+    kafka_download_url: "https://downloads.apache.org/kafka/{{ kafka_version }}/kafka_{{ scala_version }}-{{ kafka_version }}.tgz"
+    download_dir: "/tmp"
+    install_dir: "/opt/kafka"
+    archive_name: "{{ download_dir }}/kafka_{{ scala_version }}-{{ kafka_version }}.tgz"
+
+  tasks:
+    - name: Убедиться, что папка для скачивания существует
+      file:
+        path: "{{ download_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Скачать бинарный архив Kafka
+      get_url:
+        url: "{{ kafka_download_url }}"
+        dest: "{{ archive_name }}"
+        mode: '0644'
+        timeout: 60
+        force: no  # Не перекачивать, если файл уже есть
+      register: download_result
+
+    - name: Показать результат скачивания
+      debug:
+        msg: "Kafka успешно скачан: {{ archive_name }}"
+      when: download_result is succeeded
+
+    - name: Убедиться, что папка для установки существует
+      file:
+        path: "{{ install_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Распаковать архив Kafka
+      unarchive:
+        src: "{{ archive_name }}"
+        dest: "{{ install_dir }}"
+        remote_src: yes
+        extra_opts: [--strip-components=1]  # Убираем верхнюю директорию вроде kafka_2.13-3.9.1/
+      register: extract_result
+
+    - name: Проверить успешность распаковки
+      assert:
+        that:
+          - extract_result is succeeded
+        fail_msg: "Ошибка при распаковке архива Kafka"

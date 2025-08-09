@@ -109,62 +109,9 @@ resource "yandex_compute_instance" "web_b" {
   }
 }
 
-resource "yandex_compute_instance" "wrong_b" {
-  name        = "wrong-hostname" #Имя ВМ в облачной консоли
-  platform_id = "standard-v3"
-  zone        = "ru-central1-b" #зона ВМ должна совпадать с зоной subnet!!!
-
-  resources {
-    cores         = var.test.cores
-    memory        = 1
-    core_fraction = 20
-  }
-
-  boot_disk {
-    initialize_params {
-      image_id = data.yandex_compute_image.ubuntu_2204_lts.image_id
-      type     = "network-hdd"
-      size     = 10
-    }
-  }
-
-  metadata = {
-    user-data          = file("./cloud-init.yml")
-    serial-port-enable = 1
-  }
-
-  scheduling_policy { preemptible = true }
-
-  network_interface {
-    subnet_id          = yandex_vpc_subnet.develop_b.id
-    nat                = false
-    security_group_ids = [yandex_vpc_security_group.LAN.id, yandex_vpc_security_group.web_sg.id]
-
-  }
-}
-
-
-resource "local_file" "inventory" {
-  content  = <<-XYZ
-  [bastion]
-  jump ansible_host=${yandex_compute_instance.bastion.network_interface.0.nat_ip_address} ansible_user=user
-
-  [webservers]
-  web-a ${yandex_compute_instance.web_a.network_interface.0.ip_address} ansible_user=user
-  web-b ${yandex_compute_instance.web_b.network_interface.0.ip_address} ansible_user=user
-
-  [apach]
-  apach ${yandex_compute_instance.apach.network_interface.0.ip_address} ansible_user=user
-
-  [webservers:vars]
-  ansible_ssh_common_args='-o ProxyJump="user@${yandex_compute_instance.bastion.network_interface.0.nat_ip_address}"'
-  XYZ
-  filename = "./hosts.ini"
-}
-
-resource "yandex_compute_instance" "apach" {
-  name        = "apach" #Имя ВМ в облачной консоли
-  hostname    = "apach" #формирует FDQN имя хоста, без hostname будет сгенрировано случаное имя.
+resource "yandex_compute_instance" "apache" {
+  name        = "apache" #Имя ВМ в облачной консоли
+  hostname    = "apache" #формирует FDQN имя хоста, без hostname будет сгенрировано случаное имя.
   platform_id = "standard-v3"
   zone        = "ru-central1-a" #зона ВМ должна совпадать с зоной subnet!!!
 
@@ -196,4 +143,25 @@ resource "yandex_compute_instance" "apach" {
     security_group_ids = [yandex_vpc_security_group.LAN.id, yandex_vpc_security_group.web_sg.id]
   }
 }
+
+
+resource "local_file" "inventory" {
+  content  = <<-XYZ
+  [bastion]
+  jump ansible_host=${yandex_compute_instance.bastion.network_interface.0.nat_ip_address} ansible_user=user
+
+  [webservers]
+  web-a ${yandex_compute_instance.web_a.network_interface.0.ip_address} ansible_user=user
+  web-b ${yandex_compute_instance.web_b.network_interface.0.ip_address} ansible_user=user
+
+  [apach]
+  apache ${yandex_compute_instance.apache.network_interface.0.ip_address} ansible_user=user
+
+  [webservers:vars]
+  ansible_ssh_common_args='-o ProxyJump="user@${yandex_compute_instance.bastion.network_interface.0.nat_ip_address}"'
+  XYZ
+  filename = "./hosts.ini"
+}
+
+
 
