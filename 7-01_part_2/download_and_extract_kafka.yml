@@ -1,6 +1,6 @@
 ---
 - name: Скачать и распаковать Apache Kafka
-  hosts: apach
+  hosts: hw-hosts
   become: yes
   vars:
     kafka_version: "3.9.1"

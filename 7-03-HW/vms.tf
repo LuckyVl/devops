@@ -148,17 +148,21 @@ resource "yandex_compute_instance" "apache" {
 resource "local_file" "inventory" {
   content  = <<-XYZ
   [bastion]
-  jump ansible_host=${yandex_compute_instance.bastion.network_interface.0.nat_ip_address} ansible_user=user
+  ${yandex_compute_instance.bastion.network_interface.0.nat_ip_address} ansible_user=user
 
   [webservers]
-  web-a ${yandex_compute_instance.web_a.network_interface.0.ip_address} ansible_user=user
-  web-b ${yandex_compute_instance.web_b.network_interface.0.ip_address} ansible_user=user
+  ${yandex_compute_instance.web_a.network_interface.0.ip_address} ansible_user=user
+  ${yandex_compute_instance.web_b.network_interface.0.ip_address} ansible_user=user
 
-  [apach]
-  apache ${yandex_compute_instance.apache.network_interface.0.ip_address} ansible_user=user
+  [hw-hosts]
+  ${yandex_compute_instance.apache.network_interface.0.ip_address} ansible_user=user
 
   [webservers:vars]
   ansible_ssh_common_args='-o ProxyJump="user@${yandex_compute_instance.bastion.network_interface.0.nat_ip_address}"'
+
+  [hw-hosts:vars]
+  ansible_ssh_common_args='-o ProxyJump="user@${yandex_compute_instance.bastion.network_interface.0.nat_ip_address}"'
+
   XYZ
   filename = "./hosts.ini"
 }
