@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Моя страница — {{ ansible_hostname }}</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      color: white;
+      text-align: center;
+      padding: 60px 20px;
+      margin: 0;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 15px;
+      padding: 40px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    }
+    .info {
+      font-size: 1.2em;
+      line-height: 1.8;
+      text-align: left;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 15px;
+      border-radius: 10px;
+      margin: 20px auto;
+      max-width: 400px;
+    }
+    .footer {
+      margin-top: 30px;
+      font-size: 0.9em;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🚀 Добро пожаловать!</h1>
+    <p>Это — <strong>my.html</strong>, развёрнутая через Ansible.</p>
+
+    <div class="info">
+      <strong>Сервер:</strong> {{ ansible_hostname }}<br>
+      <strong>Имя в Ansible:</strong> {{ inventory_hostname }}<br>
+      <strong>IP:</strong> {{ ansible_default_ipv4.address }}<br>
+      <strong>ОС:</strong> {{ ansible_distribution }} {{ ansible_distribution_version }}
+    </div>
+
+    <p><em>Развернуто: {{ ansible_date_time.date }} {{ ansible_date_time.time }}</em></p>
+    <div class="footer">
+      &copy; {{ ansible_date_time.year }} — Управление через Ansible
+    </div>
+  </div>
+</body>
+</html>
