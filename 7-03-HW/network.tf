@@ -1,35 +1,35 @@
 #создаем облачную сеть
 resource "yandex_vpc_network" "develop" {
-  name = "develop-fops-${var.flow}"
+  name = "devops-filatovvk-${var.flow}"
 }
 
 #создаем подсеть zone A
 resource "yandex_vpc_subnet" "develop_a" {
-  name           = "develop-fops-${var.flow}-ru-central1-a"
+  name           = "devops-filatovvk-${var.flow}-ru-central1-a"
   zone           = "ru-central1-a"
   network_id     = yandex_vpc_network.develop.id
-  v4_cidr_blocks = ["10.0.1.0/24"]
+  v4_cidr_blocks = ["10.10.10.0/24"]
   route_table_id = yandex_vpc_route_table.rt.id
 }
 
 #создаем подсеть zone B
 resource "yandex_vpc_subnet" "develop_b" {
-  name           = "develop-fops-${var.flow}-ru-central1-b"
+  name           = "devops-filatovvk-${var.flow}-ru-central1-b"
   zone           = "ru-central1-b"
   network_id     = yandex_vpc_network.develop.id
-  v4_cidr_blocks = ["10.0.2.0/24"]
+  v4_cidr_blocks = ["10.20.20.0/24"]
   route_table_id = yandex_vpc_route_table.rt.id
 }
 
 #создаем NAT для выхода в интернет
 resource "yandex_vpc_gateway" "nat_gateway" {
-  name = "fops-gateway-${var.flow}"
+  name = "devops-filatovvk-${var.flow}"
   shared_egress_gateway {}
 }
 
 #создаем сетевой маршрут для выхода в интернет через NAT
 resource "yandex_vpc_route_table" "rt" {
-  name       = "fops-route-table-${var.flow}"
+  name       = "devops-filatovvk-route-table-${var.flow}"
   network_id = yandex_vpc_network.develop.id
 
   static_route {
@@ -41,7 +41,7 @@ resource "yandex_vpc_route_table" "rt" {
 #создаем группы безопасности(firewall)
 
 resource "yandex_vpc_security_group" "bastion" {
-  name       = "bastion-sg-${var.flow}"
+  name       = "bastion-${var.flow}"
   network_id = yandex_vpc_network.develop.id
   ingress {
     description    = "Allow 0.0.0.0/0"

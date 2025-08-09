@@ -5,4 +5,4 @@ users:
     shell: /bin/bash
     sudo: ["ALL=(ALL) NOPASSWD:ALL"]
     ssh_authorized_keys:
-      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMNPGyB0jwD/j3RiUdjAM25Pd3mK9Ps9Dvpc4iQ3wo1k udjin@webinar
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDJf3ksspcHYrhvtvNKfw6CcljIupIoH+4J+kiT6093FHwqaAmQvsBdB6kkLsSxEpsZBixlVcGQY+zkVy9BvdrBHnG5bdBdEZYe0rKRk4ILhwbLCMfQ4CJPq549tmqUILGCy3NArkr6+EDCW6hTUY6+ngwq/eFKNoxl/OV30b3eWdm7zGBnwLwOcUdSiGokyDgwW/JjAK3D84r4+Cn4pNj2w2/kcDPXHEI6vjENrT0/xyrwdZCsAijxQSD6ePMPg+ylM0Ve6glv1OR6NCHdAZ1St7jvxZe7OdqsY87QfK2goMunP0ur/JdJtzNSm4tLzg7+ynRfywY9PzRrzdJ3g+mHzWpXmjNUAQJGZ5XMuIUk5AumVthKaErpAEmRBWKIcY0wMFef1bmRqKu2upf7bYwSNTopFcKMmsvdF20qdF4kpD8Oz5vGRn10tSi9dV0F4ZOb7cV00KipTmU6IyvpWcsz4gRris+TWL8Jk1DRWG0XKiDz5p/YigEzDV7aSmLlmME= filatovk@server
