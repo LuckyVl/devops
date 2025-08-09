@@ -58,18 +58,16 @@
         group: www-data
         mode: '0644'
 
+    - name: Удалить стандартный сайт Nginx, (конфликт default_server)
+      ansible.builtin.file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+
     - name: Запуск и включение Nginx
       ansible.builtin.service:
         name: nginx
         state: started
         enabled: yes
-
-    - name: Принудительная перезагрузка Nginx
-      ansible.builtin.service:
-        name: nginx
-        state: restarted
-      when: restart_nginx | default(false)
-      tags: restart
 
   handlers:
     - name: Проверить конфиг и перезагрузить Nginx
