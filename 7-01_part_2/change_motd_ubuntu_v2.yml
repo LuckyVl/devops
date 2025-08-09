@@ -1,0 +1,86 @@
+---
+- name: Настроить чистый кастомный MOTD (без дублей и системной информации)
+  hosts: hw-hosts
+  become: yes
+  vars:
+    # Кастомное сообщение (можно изменить)
+    motd_custom_message: |
+      #!/bin/sh
+      echo ""
+      echo "####################################################"
+      echo "# Добро пожаловать на сервер {{ ansible_hostname }}"
+      echo "#"
+      echo "# IP-адрес: {{ ansible_default_ipv4.address }}"
+      echo "# Hostname: {{ ansible_hostname }}"
+      echo "#"
+      echo "# Пожелаем хорошего дня, уважаемый администратор!"
+      echo "####################################################"
+      echo ""
+
+  tasks:
+    - name: Убедиться, что каталог /etc/update-motd.d существует
+      file:
+        path: /etc/update-motd.d
+        state: directory
+        mode: '0755'
+
+    - name: Удалить ключевые стандартные скрипты MOTD
+      file:
+        path: "/etc/update-motd.d/{{ item }}"
+        state: absent
+      loop:
+        - "00-header"
+        - "10-help-text"
+        - "80-esm-status"
+        - "90-updates-available"
+        - "91-release-upgrade"
+        - "95-hwe-eol"
+        - "98-fan"
+        - "99-cloudinit-warnings"
+
+    - name: Отключить 50-motd-news (вместо удаления — заменить пустым скриптом)
+      copy:
+        content: |
+          #!/bin/sh
+          # Disabled by Ansible: prevents "System information as of..." from appearing
+        dest: /etc/update-motd.d/50-motd-news
+        mode: '0755'
+
+    - name: Добавить наш кастомный скрипт MOTD
+      copy:
+        content: |
+          #!/bin/sh
+          echo "{{ motd_custom_message }}"
+          echo ""
+        dest: /etc/update-motd.d/10-custom-message
+        mode: '0755'
+
+    - name: Отключить вывод MOTD через PAM (чтобы избежать дублирования)
+      lineinfile:
+        path: /etc/pam.d/sshd
+        regexp: '^@include common\.motd$'
+        line: '# @include common.motd'
+        backup: yes
+
+    - name: Убедиться, что /etc/motd — симлинк на /var/run/motd
+      file:
+        src: /var/run/motd
+        dest: /etc/motd
+        state: link
+        force: yes
+
+    - name: Отключить cloud-init warnings (EC2 metadata предупреждение)
+      file:
+        path: /var/lib/cloud/instance/warnings/.skip
+        state: touch
+
+    - name: Отключить apt_news (рекламные сообщения Ubuntu)
+      command: pro config set apt_news=false
+      ignore_errors: yes
+
+    - name: Принудительно обновить содержимое MOTD
+      command: run-parts /etc/update-motd.d/
+      args:
+        creates: /etc/update-motd.d/10-custom-message
+      changed_when: false
+      run_once: true
