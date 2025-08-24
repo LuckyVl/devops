@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f16ed345-ea8c-44a3-a058-050325121a91" name="Changes" comment="8-03" />
+    <list default="true" id="f16ed345-ea8c-44a3-a058-050325121a91" name="Changes" comment="8-03">
+      <change beforePath="$PROJECT_DIR$/7-03-HW/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/7-03-HW/.gitignore" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -41,9 +43,12 @@
     "Docker.6-04-HW.prometheus: Compose Deployment.executor": "Run",
     "Docker.6-04-HW/compose.yml: Compose Deployment.executor": "Run",
     "Docker.6-04-HW: Compose Deployment.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "last_opened_file_path": "/home/filatovk/IdeaProjects/devops/7-01_part_2",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "/home/filatovk/IdeaProjects/devops",
     "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.2",

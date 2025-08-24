@@ -9,4 +9,3 @@
 *.tfstate.*
 
 terraform.tfvars
-
