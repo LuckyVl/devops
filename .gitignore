@@ -1,0 +1,11 @@
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+out/
+target/
+*.swp
+*.swo
+*.ipr
+*.iws
+*.idea

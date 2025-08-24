@@ -109,16 +109,16 @@ resource "yandex_compute_instance" "web_b" {
   }
 }
 
-resource "yandex_compute_instance" "apache" {
-  name        = "apache" #Имя ВМ в облачной консоли
-  hostname    = "apache" #формирует FDQN имя хоста, без hostname будет сгенрировано случаное имя.
+resource "yandex_compute_instance" "zabbix" {
+  name        = "zabbix" #Имя ВМ в облачной консоли
+  hostname    = "zabbix" #формирует FDQN имя хоста, без hostname будет сгенрировано случаное имя.
   platform_id = "standard-v3"
   zone        = "ru-central1-a" #зона ВМ должна совпадать с зоной subnet!!!
 
 
   resources {
     cores         = 2
-    memory        = 1
+    memory        = 4
     core_fraction = 20
   }
 
