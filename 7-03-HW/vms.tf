@@ -155,7 +155,7 @@ resource "local_file" "inventory" {
   ${yandex_compute_instance.web_b.network_interface.0.ip_address} ansible_user=user
 
   [hw-hosts]
-  ${yandex_compute_instance.apache.network_interface.0.ip_address} ansible_user=user
+  ${yandex_compute_instance.zabbix.network_interface.0.ip_address} ansible_user=user
 
   [webservers:vars]
   ansible_ssh_common_args='-o ProxyJump="user@${yandex_compute_instance.bastion.network_interface.0.nat_ip_address}"'
