@@ -39,16 +39,16 @@ resource "yandex_compute_instance" "bastion" {
 }
 
 
-resource "yandex_compute_instance" "web_a" {
-  name        = "web-a" #Имя ВМ в облачной консоли
-  hostname    = "web-a" #формирует FDQN имя хоста, без hostname будет сгенрировано случаное имя.
+resource "yandex_compute_instance" "server-1" {
+  name        = "server-1" #Имя ВМ в облачной консоли
+  hostname    = "server-1" #формирует FDQN имя хоста, без hostname будет сгенрировано случаное имя.
   platform_id = "standard-v3"
   zone        = "ru-central1-a" #зона ВМ должна совпадать с зоной subnet!!!
 
 
   resources {
-    cores         = 2
-    memory        = 1
+    cores         = 4
+    memory        = 8
     core_fraction = 20
   }
 
@@ -74,15 +74,15 @@ resource "yandex_compute_instance" "web_a" {
   }
 }
 
-resource "yandex_compute_instance" "web_b" {
-  name        = "web-b" #Имя ВМ в облачной консоли
-  hostname    = "web-b" #формирует FDQN имя хоста, без hostname будет сгенрировано случаное имя.
+resource "yandex_compute_instance" "server-2" {
+  name        = "server-2" #Имя ВМ в облачной консоли
+  hostname    = "server-2" #формирует FDQN имя хоста, без hostname будет сгенрировано случаное имя.
   platform_id = "standard-v3"
   zone        = "ru-central1-b" #зона ВМ должна совпадать с зоной subnet!!!
 
   resources {
-    cores         = var.test.cores
-    memory        = 1
+    cores         = 4
+    memory        = 8
     core_fraction = 20
   }
 
@@ -109,16 +109,16 @@ resource "yandex_compute_instance" "web_b" {
   }
 }
 
-resource "yandex_compute_instance" "zabbix" {
-  name        = "zabbix" #Имя ВМ в облачной консоли
-  hostname    = "zabbix" #формирует FDQN имя хоста, без hostname будет сгенрировано случаное имя.
+resource "yandex_compute_instance" "server-3" {
+  name        = "server-3" #Имя ВМ в облачной консоли
+  hostname    = "server-3" #формирует FDQN имя хоста, без hostname будет сгенрировано случаное имя.
   platform_id = "standard-v3"
   zone        = "ru-central1-a" #зона ВМ должна совпадать с зоной subnet!!!
 
 
   resources {
-    cores         = 2
-    memory        = 4
+    cores         = 4
+    memory        = 8
     core_fraction = 20
   }
 
@@ -145,17 +145,56 @@ resource "yandex_compute_instance" "zabbix" {
 }
 
 
+resource "yandex_compute_instance" "server-4" {
+  name        = "server-4" #Имя ВМ в облачной консоли
+  hostname    = "server-4" #формирует FDQN имя хоста, без hostname будет сгенрировано случаное имя.
+  platform_id = "standard-v3"
+  zone        = "ru-central1-b" #зона ВМ должна совпадать с зоной subnet!!!
+
+
+  resources {
+    cores         = 4
+    memory        = 8
+    core_fraction = 20
+  }
+
+  boot_disk {
+    initialize_params {
+      image_id = data.yandex_compute_image.ubuntu_2204_lts.image_id
+      type     = "network-hdd"
+      size     = 10
+    }
+  }
+
+  metadata = {
+    user-data          = file("./cloud-init.yml")
+    serial-port-enable = 1
+  }
+
+  scheduling_policy { preemptible = true }
+
+  network_interface {
+    subnet_id          = yandex_vpc_subnet.develop_b.id
+    nat                = false
+    security_group_ids = [yandex_vpc_security_group.LAN.id, yandex_vpc_security_group.web_sg.id]
+  }
+}
+
 resource "local_file" "inventory" {
   content  = <<-XYZ
   [bastion]
+  # hostname = ${yandex_compute_instance.bastion.hostname}
   ${yandex_compute_instance.bastion.network_interface.0.nat_ip_address} ansible_user=user
 
-  [webservers]
-  ${yandex_compute_instance.web_a.network_interface.0.ip_address} ansible_user=user
-  ${yandex_compute_instance.web_b.network_interface.0.ip_address} ansible_user=user
-
-  [hw-hosts]
-  ${yandex_compute_instance.zabbix.network_interface.0.ip_address} ansible_user=user
+  [server]
+  # hostname = ${yandex_compute_instance.server-1.hostname}
+  ${yandex_compute_instance.server-1.network_interface.0.ip_address} ansible_user=user
+  # hostname = ${yandex_compute_instance.server-2.hostname}
+  ${yandex_compute_instance.server-2.network_interface.0.ip_address} ansible_user=user
+  # hostname = ${yandex_compute_instance.server-3.hostname}
+  ${yandex_compute_instance.server-3.network_interface.0.ip_address} ansible_user=user
+  # hostname = ${yandex_compute_instance.server-4.hostname}
+  ${yandex_compute_instance.server-4.network_interface.0.ip_address} ansible_user=user
 
   [webservers:vars]
   ansible_ssh_common_args='-o ProxyJump="user@${yandex_compute_instance.bastion.network_interface.0.nat_ip_address}"'
