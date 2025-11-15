@@ -202,6 +202,20 @@ resource "local_file" "inventory" {
   [hw-hosts:vars]
   ansible_ssh_common_args='-o ProxyJump="user@${yandex_compute_instance.bastion.network_interface.0.nat_ip_address}"'
 
+  [connect-ssh-hosts]
+  ssh user@${yandex_compute_instance.bastion.network_interface.0.nat_ip_address}
+  ssh -J user@${yandex_compute_instance.bastion.network_interface.0.nat_ip_address} user@${yandex_compute_instance.server-1.network_interface.0.ip_address}
+  ssh -J user@${yandex_compute_instance.bastion.network_interface.0.nat_ip_address} user@${yandex_compute_instance.server-2.network_interface.0.ip_address}
+  ssh -J user@${yandex_compute_instance.bastion.network_interface.0.nat_ip_address} user@${yandex_compute_instance.server-3.network_interface.0.ip_address}
+  ssh -J user@${yandex_compute_instance.bastion.network_interface.0.nat_ip_address} user@${yandex_compute_instance.server-4.network_interface.0.ip_address}
+
+  [connect-proxy-hosts]
+  ssh -J user@${yandex_compute_instance.bastion.network_interface.0.nat_ip_address} -L 8080:${yandex_compute_instance.bastion.network_interface.0.nat_ip_address}:80 user@${yandex_compute_instance.server-1.network_interface.0.ip_address} -N
+  ssh -J user@${yandex_compute_instance.bastion.network_interface.0.nat_ip_address} -L 8080:${yandex_compute_instance.bastion.network_interface.0.nat_ip_address}:80 user@${yandex_compute_instance.server-2.network_interface.0.ip_address} -N
+  ssh -J user@${yandex_compute_instance.bastion.network_interface.0.nat_ip_address} -L 8080:${yandex_compute_instance.bastion.network_interface.0.nat_ip_address}:80 user@${yandex_compute_instance.server-3.network_interface.0.ip_address} -N
+  ssh -J user@${yandex_compute_instance.bastion.network_interface.0.nat_ip_address} -L 8080:${yandex_compute_instance.bastion.network_interface.0.nat_ip_address}:80 user@${yandex_compute_instance.server-4.network_interface.0.ip_address} -N
+
+
   XYZ
   filename = "./hosts.ini"
 }
