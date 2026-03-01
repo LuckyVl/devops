@@ -1,0 +1,49 @@
+include:
+  - proxy.yaml
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.python.multistage
+    container_name: fastapi-app
+    expose:
+      - "5000"
+    environment:
+      - DATABASE_URL=mysql://appuser:${DB_PASS}@db:3306/${DB_NAME}
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=appuser
+      - DB_PASSWORD=${DB_PASS}
+      - DB_NAME=${DB_NAME}
+    networks:
+      backend:
+        ipv4_address: 172.20.0.5
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: ${DB_PASS}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      backend:
+        ipv4_address: 172.20.0.10
+    restart: "no"
+
+networks:
+  backend:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
+
+volumes:
+  mysql_data:
