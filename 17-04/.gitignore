@@ -1,0 +1,33 @@
+# Секреты — НИКОГДА не коммитить!
+.env
+.env.backup
+*.pem
+*.key
+
+# Логи
+logs/
+*.log
+
+# Бэкапы БД
+*.sql.gz
+/opt/backup/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+.venv/
+venv/
+
+# Docker
+*.tar
+*.tar.gz
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo

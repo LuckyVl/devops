@@ -1,0 +1,56 @@
+version: '3.8'
+
+# Подключаем существующий proxy.yaml (не создаём, не меняем!)
+include:
+  - proxy.yaml
+
+services:
+  # FastAPI приложение — собираем из Dockerfile.python
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.python  # ← используем НОВЫЙ файл
+    container_name: fastapi-app
+    expose:
+      - "5000"
+    environment:
+      - DATABASE_URL=mysql://appuser:${DB_PASS}@db:3306/${DB_NAME}
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=appuser
+      - DB_PASSWORD=${DB_PASS}
+      - DB_NAME=${DB_NAME}
+    networks:
+      backend:
+        ipv4_address: 172.20.0.5  # ← как в haproxy.cfg!
+    depends_on:
+      - db
+    restart: unless-stopped  # ← перезапуск при ошибках
+
+  # MySQL база данных
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: ${DB_PASS}
+    volumes:
+      - mysql_/var/lib/mysql
+    networks:
+      backend:
+        ipv4_address: 172.20.0.10  # ← как в haproxy.cfg!
+    restart: "no"  # ← ручной перезапуск (как в ТЗ)
+
+# Сеть backend с фиксированными IP
+networks:
+  backend:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
+
+# Volume для данных MySQL
+volumes:
+  mysql_
