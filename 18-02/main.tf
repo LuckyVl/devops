@@ -1,5 +1,4 @@
 # =============================================================================
-# Файл: main.tf
 # Описание: Основные ресурсы инфраструктуры
 # =============================================================================
 
@@ -27,7 +26,7 @@ resource "yandex_vpc_subnet" "develop_db" {
 }
 
 # --------------------------
-# VM WEB: Image & Instance
+# VM WEB
 # --------------------------
 data "yandex_compute_image" "ubuntu_web" {
   family = var.vm_image_family
@@ -36,17 +35,19 @@ data "yandex_compute_image" "ubuntu_web" {
 resource "yandex_compute_instance" "platform_web" {
   name        = local.vm_web_name
   platform_id = var.vm_platform_id
-  zone        = var.vm_web_zone
+  zone        = var.vms_resources["web"].zone
 
   resources {
-    cores         = var.vm_web_cores
-    memory        = var.vm_web_memory
-    core_fraction = var.vm_web_core_fraction
+    cores         = var.vms_resources["web"].cores
+    memory        = var.vms_resources["web"].memory
+    core_fraction = var.vms_resources["web"].core_fraction
   }
 
   boot_disk {
     initialize_params {
-      image_id = data.yandex_compute_image.ubuntu_web.image_id
+      image_id    = data.yandex_compute_image.ubuntu_web.image_id
+      size        = var.vms_resources["web"].hdd_size
+      type        = var.vms_resources["web"].hdd_type
     }
   }
 
@@ -56,14 +57,21 @@ resource "yandex_compute_instance" "platform_web" {
 
   network_interface {
     subnet_id = yandex_vpc_subnet.develop_web.id
-    nat       = var.vm_web_nat
+    nat       = var.vms_resources["web"].nat
   }
 
   metadata = local.common_metadata
+
+  metadata_options {
+    aws_v1_http_endpoint = 1
+    aws_v1_http_token    = 2
+    gce_http_endpoint    = 1
+    gce_http_token       = 1
+  }
 }
 
 # --------------------------
-# VM DB: Image & Instance
+# VM DB
 # --------------------------
 data "yandex_compute_image" "ubuntu_db" {
   family = var.vm_image_family
@@ -72,17 +80,19 @@ data "yandex_compute_image" "ubuntu_db" {
 resource "yandex_compute_instance" "platform_db" {
   name        = local.vm_db_name
   platform_id = var.vm_platform_id
-  zone        = var.vm_db_zone
+  zone        = var.vms_resources["db"].zone
 
   resources {
-    cores         = var.vm_db_cores
-    memory        = var.vm_db_memory
-    core_fraction = var.vm_db_core_fraction
+    cores         = var.vms_resources["db"].cores
+    memory        = var.vms_resources["db"].memory
+    core_fraction = var.vms_resources["db"].core_fraction
   }
 
   boot_disk {
     initialize_params {
-      image_id = data.yandex_compute_image.ubuntu_db.image_id
+      image_id    = data.yandex_compute_image.ubuntu_db.image_id
+      size        = var.vms_resources["db"].hdd_size
+      type        = var.vms_resources["db"].hdd_type
     }
   }
 
@@ -92,8 +102,15 @@ resource "yandex_compute_instance" "platform_db" {
 
   network_interface {
     subnet_id = yandex_vpc_subnet.develop_db.id
-    nat       = var.vm_db_nat
+    nat       = var.vms_resources["db"].nat
   }
 
   metadata = local.common_metadata
+
+  metadata_options {
+    aws_v1_http_endpoint = 1
+    aws_v1_http_token    = 2
+    gce_http_endpoint    = 1
+    gce_http_token       = 1
+  }
 }

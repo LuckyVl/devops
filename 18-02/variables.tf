@@ -20,6 +20,7 @@ variable "folder_id" {
 # --------------------------
 # Network Variables
 # --------------------------
+
 variable "vpc_name" {
   type        = string
   description = "VPC network & subnet name prefix"
@@ -56,8 +57,62 @@ variable "vm_preemptible" {
   default     = true
 }
 
-variable "vm_serial_port_enable" {
-  type        = number
-  description = "Enable serial console for all VMs (1 = enabled)"
-  default     = 1
+# --------------------------
+# Resources Map
+# --------------------------
+variable "vms_resources" {
+  type = map(object({
+    zone          = string
+    cores         = number
+    memory        = number
+    core_fraction = number
+    hdd_size      = number
+    hdd_type      = string
+    nat           = bool
+  }))
+  description = "Resources configuration for all VMs"
+  default = {
+    web = {
+      zone          = "ru-central1-a"
+      cores         = 2
+      memory        = 1
+      core_fraction = 20
+      hdd_size      = 5
+      hdd_type      = "network-hdd"
+      nat           = true
+    }
+    db = {
+      zone          = "ru-central1-b"
+      cores         = 2
+      memory        = 2
+      core_fraction = 20
+      hdd_size      = 5
+      hdd_type      = "network-hdd"
+      nat           = true
+    }
+  }
 }
+
+# --------------------------
+# Common Metadata Map
+# --------------------------
+variable "vm_metadata" {
+  type = object({
+    serial-port-enable = number
+    ssh-keys           = string
+  })
+  description = "Common metadata for all VMs"
+  default = {
+    serial-port-enable = 1
+    ssh-keys           = ""
+  }
+}
+
+# =============================================================================
+# ЗАКОММЕНТИРОВАНО: Более не используются
+# =============================================================================
+# variable "default_zone" {
+#  type        = string
+#  description = "Default availability zone for provider and resources"
+#  default     = "ru-central1-a"
+#}
