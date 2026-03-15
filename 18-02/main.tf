@@ -19,7 +19,6 @@ resource "yandex_compute_instance" "platform" {
     cores         = 2
     memory        = 1
     core_fraction = 20
-  }
   boot_disk {
     initialize_params {
       image_id = data.yandex_compute_image.ubuntu.image_id
