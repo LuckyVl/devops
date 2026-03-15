@@ -1,4 +1,5 @@
 # =============================================================================
+# Файл: main.tf
 # Описание: Основные ресурсы инфраструктуры
 # =============================================================================
 
@@ -9,6 +10,7 @@ resource "yandex_vpc_network" "develop" {
   name = var.vpc_name
 }
 
+# Подсеть для Web (зона A)
 resource "yandex_vpc_subnet" "develop_web" {
   name           = "${var.vpc_name}-web"
   zone           = var.subnet_web_zone
@@ -16,6 +18,7 @@ resource "yandex_vpc_subnet" "develop_web" {
   v4_cidr_blocks = var.subnet_web_cidr
 }
 
+# Подсеть для DB (зона B)
 resource "yandex_vpc_subnet" "develop_db" {
   name           = "${var.vpc_name}-db"
   zone           = var.subnet_db_zone
@@ -24,14 +27,14 @@ resource "yandex_vpc_subnet" "develop_db" {
 }
 
 # --------------------------
-# VM WEB
+# VM WEB: Image & Instance
 # --------------------------
 data "yandex_compute_image" "ubuntu_web" {
   family = var.vm_image_family
 }
 
 resource "yandex_compute_instance" "platform_web" {
-  name        = var.vm_web_name
+  name        = local.vm_web_name
   platform_id = var.vm_platform_id
   zone        = var.vm_web_zone
 
@@ -56,21 +59,18 @@ resource "yandex_compute_instance" "platform_web" {
     nat       = var.vm_web_nat
   }
 
-  metadata = {
-    serial-port-enable = var.vm_serial_port_enable
-    ssh-keys           = "ubuntu:${var.vms_ssh_root_key}"
-  }
+  metadata = local.common_metadata
 }
 
 # --------------------------
-# VM DB
+# VM DB: Image & Instance
 # --------------------------
 data "yandex_compute_image" "ubuntu_db" {
   family = var.vm_image_family
 }
 
 resource "yandex_compute_instance" "platform_db" {
-  name        = var.vm_db_name
+  name        = local.vm_db_name
   platform_id = var.vm_platform_id
   zone        = var.vm_db_zone
 
@@ -95,8 +95,5 @@ resource "yandex_compute_instance" "platform_db" {
     nat       = var.vm_db_nat
   }
 
-  metadata = {
-    serial-port-enable = var.vm_serial_port_enable
-    ssh-keys           = "ubuntu:${var.vms_ssh_root_key}"
-  }
+  metadata = local.common_metadata
 }

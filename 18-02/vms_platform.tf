@@ -1,5 +1,5 @@
 # =============================================================================
-# Описание: Переменные для виртуальных машин и их подсетей (VM-специфичные)
+# Описание: Переменные для виртуальных машин и их подсетей
 # =============================================================================
 
 # --------------------------
@@ -32,12 +32,6 @@ variable "subnet_db_cidr" {
 # --------------------------
 # VM WEB Variables
 # --------------------------
-variable "vm_web_name" {
-  type        = string
-  description = "Name of the web virtual machine"
-  default     = "netology-develop-platform-web"
-}
-
 variable "vm_web_cores" {
   type        = number
   description = "Number of CPU cores for web VM"
@@ -71,12 +65,6 @@ variable "vm_web_zone" {
 # --------------------------
 # VM DB Variables
 # --------------------------
-variable "vm_db_name" {
-  type        = string
-  description = "Name of the database virtual machine"
-  default     = "netology-develop-platform-db"
-}
-
 variable "vm_db_cores" {
   type        = number
   description = "Number of CPU cores for DB VM"
