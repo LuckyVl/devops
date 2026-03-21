@@ -4,6 +4,10 @@ terraform {
       source = "yandex-cloud/yandex"
       version = ">= 0.190.0"
     }
+    local = {
+      source  = "hashicorp/local"
+      version = ">= 2.4.0"
+    }
   }
   required_version = "~>1.14.0"
 }
@@ -14,3 +18,5 @@ provider "yandex" {
   folder_id = var.folder_id
   zone      = var.default_zone
 }
+
+provider "local" {}
