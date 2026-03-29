@@ -2,7 +2,7 @@ resource "yandex_compute_instance" "web" {
   count = 2
 
   name        = "web-${count.index + 1}"
-  platform_id = "standard-v1"
+  platform_id = var.platform_id
   zone        = var.default_zone
   hostname    = "web-${count.index + 1}"
 
@@ -17,8 +17,8 @@ resource "yandex_compute_instance" "web" {
 
   boot_disk {
     initialize_params {
-      image_id = "fd8e5jmcvep85j33nt0e"
-      type     = "network-hdd"
+      image_id = data.yandex_compute_image.ubuntu.image_id
+      type     = var.disk_type
       size     = 10
     }
   }

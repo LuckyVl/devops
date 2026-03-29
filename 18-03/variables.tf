@@ -30,3 +30,23 @@ variable "vpc_name" {
   default     = "develop"
   description = "VPC network&subnet name"
 }
+data "yandex_compute_image" "ubuntu" {
+  family = var.image_family
+}
+variable "platform_id" {
+  type        = string
+  default     = "standard-v1"
+  description = "Платформа"
+}
+
+variable "disk_type" {
+  type        = string
+  default     = "network-hdd"
+  description = "Тип диска"
+}
+
+variable "image_family" {
+  type        = string
+  default     = "ubuntu-2404-lts"
+  description = "Семейство образа ОС"
+}

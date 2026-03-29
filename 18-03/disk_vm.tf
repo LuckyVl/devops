@@ -2,14 +2,14 @@ resource "yandex_compute_disk" "additional" {
   count = 3
 
   name = "disk-${count.index + 1}"
-  type = "network-hdd"
+  type = var.disk_type
   zone = var.default_zone
   size = 1
 }
 
 resource "yandex_compute_instance" "storage" {
   name        = "storage"
-  platform_id = "standard-v1"
+  platform_id = var.platform_id
   zone        = var.default_zone
   hostname    = "storage"
 
@@ -24,8 +24,8 @@ resource "yandex_compute_instance" "storage" {
 
   boot_disk {
     initialize_params {
-      image_id = "fd8e5jmcvep85j33nt0e"
-      type     = "network-hdd"
+      image_id = data.yandex_compute_image.ubuntu.image_id
+      type     = var.disk_type
       size     = 10
     }
   }

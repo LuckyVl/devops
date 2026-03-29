@@ -19,7 +19,7 @@ resource "yandex_compute_instance" "database" {
   for_each = local.vm_map
 
   name        = each.value.vm_name
-  platform_id = "standard-v1"
+  platform_id = var.platform_id
   zone        = var.default_zone
   hostname    = each.value.vm_name
 
@@ -34,8 +34,8 @@ resource "yandex_compute_instance" "database" {
 
   boot_disk {
     initialize_params {
-      image_id = "fd8e5jmcvep85j33nt0e"
-      type     = "network-hdd"
+      image_id = data.yandex_compute_image.ubuntu.image_id
+      type     = var.disk_type
       size     = each.value.disk_volume
     }
   }

@@ -1,3 +1,4 @@
+# файл создан только для тестирования Задания 7*
 locals {
   test_vpc = {
     network_id = "enp7i560tb28nageq0cc"
