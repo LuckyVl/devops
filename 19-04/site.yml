@@ -1,0 +1,35 @@
+---
+- name: Deploy ClickHouse
+  hosts: clickhouse
+  become: true
+  roles:
+    - role: clickhouse-role
+      clickhouse_user: "{{ clickhouse_user }}"
+      clickhouse_password: "{{ clickhouse_password }}"
+      clickhouse_listen_host: "0.0.0.0"
+
+- name: Deploy Vector
+  hosts: vector
+  become: true
+  roles:
+    - role: vector-role
+  vars:
+    clickhouse_user: "{{ clickhouse_user }}"
+    clickhouse_password: "{{ clickhouse_password }}"
+
+- name: Deploy Lighthouse
+  hosts: lighthouse
+  become: true
+  pre_tasks:
+    - name: Ensure Nginx is installed
+      ansible.builtin.yum:
+        name: nginx
+        state: present
+  roles:
+    - role: lighthouse-role
+  post_tasks:
+    - name: Show Lighthouse access URL
+      ansible.builtin.debug:
+        msg: |
+          🚀 Lighthouse доступен по адресу:
+          http://{{ ansible_host }}/#http://{{ hostvars['clickhouse-01'].ansible_host }}:8123/?user={{ clickhouse_user }}

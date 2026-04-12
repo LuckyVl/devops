@@ -1,0 +1,21 @@
+# roles/lighthouse-role/templates/lighthouse.conf.j2
+server {
+    listen 80;
+    server_name _;
+
+    access_log /var/log/nginx/{{ lighthouse_access_log }}.log combined;
+    error_log /var/log/nginx/lighthouse_error.log;
+
+    root {{ lighthouse_dir }};
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    location /clickhouse {
+        proxy_pass http://{{ hostvars['clickhouse-01'].ansible_host }}:8123;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}

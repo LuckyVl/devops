@@ -1,0 +1,3 @@
+---
+clickhouse_user: netology
+clickhouse_password: "{{ vault_clickhouse_password | default('netology') }}"

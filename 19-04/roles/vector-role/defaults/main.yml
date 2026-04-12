@@ -1,0 +1,5 @@
+---
+clickhouse_user: netology
+clickhouse_password: netology
+vector_version: "0.21.1"
+vector_architecture: "{{ ansible_architecture }}"

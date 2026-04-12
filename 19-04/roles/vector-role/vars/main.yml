@@ -1,0 +1,23 @@
+---
+vector_config_path: /etc/vector/vector.yaml
+vector_service_name: vector
+vector_config:
+  sources:
+    local_logs:
+      type: file
+      include:
+        - /var/log/**/*.log
+      read_from: beginning
+  sinks:
+    clickhouse_sink:
+      type: clickhouse
+      inputs:
+        - local_logs
+      endpoint: "http://{{ hostvars['clickhouse-01'].ansible_host }}:8123"
+      database: logs
+      table: vector_internal_logs
+      auth:
+        strategy: basic
+        user: "{{ clickhouse_user }}"
+        password: "{{ clickhouse_password }}"
+      compression: gzip

@@ -1,0 +1,21 @@
+---
+clickhouse:
+  hosts:
+    clickhouse-01:
+      ansible_host: 127.0.0.1
+      ansible_connection: local
+      ansible_become: true
+
+vector:
+  hosts:
+    vector-01:
+      ansible_host: 127.0.0.1
+      ansible_connection: local
+      ansible_become: true
+
+lighthouse:
+  hosts:
+    lighthouse-01:
+      ansible_host: 127.0.0.1
+      ansible_connection: local
+      ansible_become: true
