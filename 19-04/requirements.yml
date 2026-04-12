@@ -1,15 +1,16 @@
 ---
+# Внешняя роль ClickHouse
 - name: clickhouse-role
   src: git@github.com:AlexeySetevoi/ansible-clickhouse.git
   scm: git
-  version: "1.13.0"
+  version: "1.11.0"
 
-- name: vector-role
-  src: git@github.com:<ваш-username>/vector-role.git
+# Кастомные роли
+  src: git@github.com:LuckyVl/vector-role.git
   scm: git
-  version: "1.0.0"
+  version: "v1.0.0"
 
 - name: lighthouse-role
-  src: git@github.com:<ваш-username>/lighthouse-role.git
+  src: git@github.com:LuckyVl/lighthouse-role.git
   scm: git
-  version: "1.0.0"
+  version: "v1.0.0"
