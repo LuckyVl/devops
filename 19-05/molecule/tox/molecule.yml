@@ -1,0 +1,17 @@
+---
+prerun: false
+driver:
+  name: podman
+platforms:
+  - name: instance-podman
+    image: ubuntu:24.04
+    privileged: true
+    pre_build_image: true
+    ansible_python_interpreter: /usr/bin/python3
+provisioner:
+  name: ansible
+  playbooks:
+    prepare: ../default/prepare.yml
+    converge: ../../playbook.yml
+verifier:
+  name: ansible

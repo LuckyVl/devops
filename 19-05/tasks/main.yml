@@ -1,0 +1,4 @@
+---
+- name: Test placeholder task
+  ansible.builtin.debug:
+    msg: "Vector role test passed on {{ ansible_distribution }} {{ ansible_distribution_version }}"

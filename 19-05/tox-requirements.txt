@@ -1,0 +1,4 @@
+ansible-core>=2.15.0
+molecule>=25.0.0
+molecule-docker
+molecule-podman

@@ -1,0 +1,7 @@
+---
+- name: Test Vector Role
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Include role tasks
+      ansible.builtin.include_tasks: "{{ playbook_dir }}/tasks/main.yml"

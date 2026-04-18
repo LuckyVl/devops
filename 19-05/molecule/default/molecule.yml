@@ -1,0 +1,17 @@
+---
+prerun: false
+driver:
+  name: docker
+platforms:
+  - name: instance-ubuntu
+    image: ubuntu:24.04
+    privileged: true
+    pre_build_image: true
+    ansible_python_interpreter: /usr/bin/python3
+provisioner:
+  name: ansible
+  playbooks:
+    prepare: prepare.yml
+    converge: ../../playbook.yml
+verifier:
+  name: ansible

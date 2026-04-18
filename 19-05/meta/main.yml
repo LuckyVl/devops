@@ -1,0 +1,16 @@
+---
+galaxy_info:
+  author: Vladimir Filatov
+  description: Vector log aggregator Ansible role
+  license: MIT
+  min_ansible_version: "2.15"
+  platforms:
+    - name: Ubuntu
+      versions: ["24.04", "22.04"]
+    - name: Debian
+      versions: ["13", "12"]
+  galaxy_tags: [monitoring, logging, vector]
+role_name: vector_role
+namespace: filatov_vk
+dependencies: []
+  EOF

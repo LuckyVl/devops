@@ -1,0 +1,10 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Assert test passed
+      ansible.builtin.assert:
+        that: true
+        success_msg: "Molecule verify passed on {{ ansible_distribution }}"
+        fail_msg: "Verification failed"
