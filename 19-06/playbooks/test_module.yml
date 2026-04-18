@@ -1,0 +1,18 @@
+---
+- name: Test my_own_module
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+  tasks:
+    - name: Create test file with my_own_module
+      my_own_namespace.yandex_cloud_elk.my_own_module:
+        path: /tmp/ansible_playbook_test.txt
+        content: "Created via playbook"
+      register: result
+
+    - name: Show result
+      debug:
+        var: result

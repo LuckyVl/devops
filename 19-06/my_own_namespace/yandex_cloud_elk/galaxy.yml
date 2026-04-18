@@ -1,0 +1,13 @@
+namespace: my_own_namespace
+name: yandex_cloud_elk
+version: 1.0.0
+readme: README.md
+authors:
+  - Filatov V.K. (@LuckyVl)
+description: Custom collection for Netology MNT homework
+license:
+  - GPL-3.0-or-later
+tags: [netology, ansible, module, elk]
+dependencies: {}
+repository: https://github.com/LuckyVl/devops/tree/main/19-06
+documentation: https://github.com/LuckyVl/devops/blob/main/19-06/README.md

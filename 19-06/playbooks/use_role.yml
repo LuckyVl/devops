@@ -1,0 +1,18 @@
+---
+- name: Use create_file role from collection
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+  pre_tasks:
+    - name: Ensure collection is available
+      debug:
+        msg: "Using collection my_own_namespace.yandex_cloud_elk"
+
+  roles:
+    - role: my_own_namespace.yandex_cloud_elk.create_file
+      vars:
+        file_path: /tmp/role_test.txt
+        file_content: "Content from role with defaults override"
