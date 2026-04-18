@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# Copyright: (c) 2024, Filatov V.K. <filatov.v.k@example.org>
+# Copyright: (c) 2024, Filatov V.K. <filatov.v.k@gmail.com>
 # GNU General Public License v3.0+
 
 from __future__ import absolute_import, division, print_function
