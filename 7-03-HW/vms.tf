@@ -11,8 +11,8 @@ resource "yandex_compute_instance" "bastion" {
   zone        = "ru-central1-a" #зона ВМ должна совпадать с зоной subnet!!!
 
   resources {
-    cores         = 2
-    memory        = 1
+    cores         = 4
+    memory        = 8
     core_fraction = 20
   }
 
