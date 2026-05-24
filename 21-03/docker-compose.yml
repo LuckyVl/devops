@@ -1,0 +1,84 @@
+services:
+  es-hot:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.0
+    container_name: es-hot
+    environment:
+      - cluster.name=homework-cluster
+      - node.name=es-hot
+      - node.roles=master,data
+      - discovery.seed_hosts=es-hot,es-warm
+      - cluster.initial_master_nodes=es-hot
+      - xpack.security.enabled=false
+      - xpack.security.enrollment.enabled=false
+      - ES_JAVA_OPTS=-Xms256m -Xmx256m
+    volumes:
+      - ./data/es-hot:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    networks: [elastic]
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  es-warm:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.0
+    container_name: es-warm
+    environment:
+      - cluster.name=homework-cluster
+      - node.name=es-warm
+      - node.roles=master,data
+      - discovery.seed_hosts=es-hot,es-warm
+      - xpack.security.enabled=false
+      - xpack.security.enrollment.enabled=false
+      - ES_JAVA_OPTS=-Xms256m -Xmx256m
+    volumes:
+      - ./data/es-warm:/usr/share/elasticsearch/data
+    depends_on:
+      es-hot:
+        condition: service_healthy
+    networks: [elastic]
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.15.0
+    container_name: logstash
+    volumes:
+      - ./config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+    ports:
+      - "5044:5044"
+      - "5000:5000"
+    depends_on:
+      es-hot:
+        condition: service_healthy
+    networks: [elastic]
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.15.0
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://es-hot:9200
+      - xpack.security.enabled=false
+    ports:
+      - "5601:5601"
+    depends_on:
+      es-hot:
+        condition: service_healthy
+    networks: [elastic]
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.15.0
+    container_name: filebeat
+    user: root
+    volumes:
+      - ./config/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      logstash:
+        condition: service_started
+    networks: [elastic]
+
+networks:
+  elastic:
+    driver: bridge
