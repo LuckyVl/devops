@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: task1-23-03-curl-pod
+  labels:
+    app: curl-test
+spec:
+  containers:
+    - name: multitool
+      image: wbitt/network-multitool:latest
+      command: ["sleep", "3600"]
+      env:
+        - name: HTTP_PORT
+          value: "9999"
+        - name: HTTPS_PORT
+          value: "9443"

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: task1-23-03-service
+spec:
+  selector:
+    app: task1-23-03-app
+  ports:
+    - name: nginx
+      protocol: TCP
+      port: 80
+      targetPort: 80
+    - name: multitool
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP

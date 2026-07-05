@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: task2-23-03-service
+spec:
+  selector:
+    app: task2-23-03-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
