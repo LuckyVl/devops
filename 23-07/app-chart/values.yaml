@@ -1,0 +1,19 @@
+frontend:
+  replicaCount: 1
+  image:
+    repository: nginx
+    tag: "1.21.0"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 80
+
+backend:
+  replicaCount: 1
+  image:
+    repository: nginx
+    tag: "1.21.0"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 80
