@@ -42,8 +42,8 @@ resource "yandex_kubernetes_node_group" "k8s_nodes" {
     platform_id = "standard-v3"
 
     resources {
-      memory = 4
-      cores  = 2
+      memory = 8
+      cores  = 4
     }
 
     boot_disk {
@@ -53,7 +53,7 @@ resource "yandex_kubernetes_node_group" "k8s_nodes" {
 
     network_interface {
       subnet_ids = [yandex_vpc_subnet.k8s_subnet.id]
-      nat        = false  # ← ИЗМЕНИТЬ: был true, стал false
+      nat        = true
 
       security_group_ids = [yandex_vpc_security_group.k8s_nodes_sg.id]
     }
